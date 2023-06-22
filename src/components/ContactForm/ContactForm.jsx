@@ -4,6 +4,7 @@ import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from 'redux/users/userSelectors';
 import { addContact, updateContact } from 'redux/users/operations';
+import { toast } from 'react-hot-toast';
 
 export const ContactForm = () => {
   const [user, setUser] = useState({ name: '', number: '' });
@@ -34,7 +35,7 @@ export const ContactForm = () => {
           contact.number === newContact.number
       )
     ) {
-      alert('You have this contact already');
+      toast.error(`You have this contact`);
       return resetForm();
     }
     if (
@@ -51,7 +52,6 @@ export const ContactForm = () => {
       ).id;
 
       dispatch(updateContact(newContact));
-      alert('You just changed this contact');
       return resetForm();
     }
 
