@@ -3,7 +3,7 @@ import { Button } from './ContactForm.styled';
 import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from 'redux/users/userSelectors';
-import { addContact } from 'redux/users/operations';
+import { addContact, updateContact } from 'redux/users/operations';
 
 export const ContactForm = () => {
   const [user, setUser] = useState({ name: '', number: '' });
@@ -21,21 +21,41 @@ export const ContactForm = () => {
   const handleFormSubmit = e => {
     e.preventDefault();
 
-    const contact = {
+    const newContact = {
       // id: nanoid(),
       name: user.name,
       number: user.number,
     };
 
-    if (contactUser.find(item => item.name === user.name)) {
-      alert(`${user.name} is already in contacts.`);
-      return;
-    } else if (contactUser.find(item => item.number === user.number)) {
-      alert(`${user.number} is already in contacts.`);
-      return;
+    if (
+      contactUser.find(
+        contact =>
+          contact.name === newContact.name &&
+          contact.number === newContact.number
+      )
+    ) {
+      alert('You have this contact already');
+      return resetForm();
+    }
+    if (
+      contactUser.find(
+        contact =>
+          contact.name === newContact.name ||
+          contact.number === newContact.number
+      )
+    ) {
+      newContact.id = contactUser.find(
+        contact =>
+          contact.name === newContact.name ||
+          contact.number === newContact.number
+      ).id;
+
+      dispatch(updateContact(newContact));
+      alert('You just changed this contact');
+      return resetForm();
     }
 
-    dispatch(addContact(contact));
+    dispatch(addContact(newContact));
     resetForm();
   };
 
